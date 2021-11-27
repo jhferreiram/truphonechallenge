@@ -1,13 +1,14 @@
 package com.challenge.truphonechallenge;
 
 import com.challenge.truphonechallenge.dto.CreateDeviceDTO;
+import com.challenge.truphonechallenge.dto.DeviceDTO;
 import com.challenge.truphonechallenge.service.DeviceService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 public class DeviceController implements DeviceAPI {
@@ -20,8 +21,8 @@ public class DeviceController implements DeviceAPI {
     }
 
     @Override
-    public ResponseEntity listDevices() {
-        return ResponseEntity.ok(this.deviceService.listDevices());
+    public ResponseEntity<List<DeviceDTO>> listDevices(int page, int size, String brand) {
+        return ResponseEntity.ok(this.deviceService.listDevices(page, size, brand));
     }
 
     @Override

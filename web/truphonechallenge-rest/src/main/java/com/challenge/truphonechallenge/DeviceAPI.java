@@ -10,7 +10,9 @@ import java.util.List;
 public interface DeviceAPI {
 
     @GetMapping("/devices")
-    ResponseEntity<List<DeviceDTO>> listDevices();
+    ResponseEntity<List<DeviceDTO>> listDevices(@RequestParam(required = false, defaultValue = "0") int page,
+                                                @RequestParam(required = false, defaultValue = "5") int size,
+                                                @RequestParam(required = false) String brand);
 
     @GetMapping("/devices/{id}")
     ResponseEntity<DeviceDTO> getDevice(@PathVariable Long id);

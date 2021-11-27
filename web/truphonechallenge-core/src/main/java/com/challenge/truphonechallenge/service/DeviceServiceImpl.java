@@ -1,14 +1,15 @@
 package com.challenge.truphonechallenge.service;
 
+import com.challenge.truphonechallenge.dataprovider.IDeviceDataProvider;
 import com.challenge.truphonechallenge.dto.CreateDeviceDTO;
 import com.challenge.truphonechallenge.dto.DeviceDTO;
 import com.challenge.truphonechallenge.exceptions.GenericErrorException;
 import com.challenge.truphonechallenge.exceptions.UserNotFoundException;
 import com.challenge.truphonechallenge.model.Device;
-import com.challenge.truphonechallenge.dataprovider.IDeviceDataProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
-
+import org.springframework.data.domain.PageRequest;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,8 +25,9 @@ public class DeviceServiceImpl implements DeviceService {
     }
 
     @Override
-    public List<DeviceDTO> listDevices() {
-        return this.dataProvider.listDevices().stream().map(this::toDeviceDTO).collect(Collectors.toList());
+    public List<DeviceDTO> listDevices(int page, int size, String brand) {
+        PageRequest pageReq = PageRequest.of(page, size);
+        return dataProvider.listDevices(pageReq, brand).stream().map(this::toDeviceDTO).collect(Collectors.toList());
     }
 
     @Override

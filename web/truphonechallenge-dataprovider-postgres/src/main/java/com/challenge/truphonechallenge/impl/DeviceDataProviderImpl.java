@@ -5,6 +5,8 @@ import com.challenge.truphonechallenge.dataprovider.IDeviceDataProvider;
 import com.challenge.truphonechallenge.entity.DeviceEntity;
 import com.challenge.truphonechallenge.repository.IDeviceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -21,8 +23,9 @@ public class DeviceDataProviderImpl implements IDeviceDataProvider {
     }
 
     @Override
-    public List<Device> listDevices() {
-        return this.repo.findAll().stream().map(this::toDevice).collect(Collectors.toList());
+    public List<Device> listDevices(PageRequest pageRequest, String brand) {
+        Page<DeviceEntity> results = brand != null ? this.repo.findAllByBrand(brand, pageRequest) : this.repo.findAll(pageRequest);
+        return results.stream().map(this::toDevice).collect(Collectors.toList());
     }
 
     @Override

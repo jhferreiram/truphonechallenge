@@ -73,6 +73,33 @@ public class DeviceControllerIntegrationTest {
     }
 
     @Test
+    void listDevicesByBrandAndPagination() throws Exception {
+        Device device = Device.builder()
+                .name("Dummy_Device_1")
+                .brand("Dummy_Brand_1")
+                .time(LocalDateTime.parse("2021-01-01T01:01:01"))
+                .build();
+        this.dataProvider.saveDevice(device);
+        device = Device.builder()
+                .name("Dummy_Device_2")
+                .brand("Dummy_Brand_2")
+                .time(LocalDateTime.parse("2021-01-01T01:01:01"))
+                .build();
+        this.dataProvider.saveDevice(device);
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get("/devices")
+                .queryParam("brand", "Dummy_Brand_1")
+                .queryParam("size", "1")
+                .queryParam("page", "0")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        this.mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].brand", is("Dummy_Brand_1")));
+    }
+
+    @Test
     void getDevice() throws Exception {
         Device device = Device.builder()
                 .name("Dummy_Device_1")

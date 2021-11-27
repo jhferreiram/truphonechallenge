@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface DeviceService {
 
-    List<DeviceDTO> listDevices();
+    List<DeviceDTO> listDevices(int page, int size, String brand);
 
     DeviceDTO getDevice(Long id);
 

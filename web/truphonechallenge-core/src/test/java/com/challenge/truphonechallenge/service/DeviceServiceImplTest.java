@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
+import org.springframework.data.domain.PageRequest;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -41,9 +42,26 @@ public class DeviceServiceImplTest {
                         .build()
         );
 
-        Mockito.when(dataProvider.listDevices()).thenReturn(deviceList);
+        Mockito.when(dataProvider.listDevices(Mockito.any(PageRequest.class), Mockito.anyString())).thenReturn(deviceList);
 
-        Assertions.assertEquals(deviceList.stream().map(service::toDeviceDTO).collect(Collectors.toList()), service.listDevices());
+        Assertions.assertEquals(deviceList.stream().map(service::toDeviceDTO).collect(Collectors.toList()),
+                service.listDevices(0, 5, ""));
+    }
+
+    @Test
+    public void testListDevicesFilterByBrand() {
+        List<Device> deviceList = Arrays.asList(
+                Device.builder()
+                        .name("Name_1")
+                        .brand("Brand_1")
+                        .time(LocalDateTime.parse("2021-01-01T01:01:01"))
+                        .build()
+        );
+
+        Mockito.when(dataProvider.listDevices(Mockito.any(PageRequest.class), Mockito.anyString())).thenReturn(deviceList);
+
+        Assertions.assertEquals(deviceList.stream().map(service::toDeviceDTO).collect(Collectors.toList()),
+                service.listDevices(0, 5, "Brand_1"));
     }
 
     @Test

@@ -7,10 +7,15 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class DeviceDataProviderImplTest {
@@ -28,7 +33,7 @@ public class DeviceDataProviderImplTest {
 
     @Test
     public void testListDevices() {
-        List<DeviceEntity> deviceEntities = Arrays.asList(
+        Page<DeviceEntity> deviceEntities = new PageImpl((Arrays.asList(
                 DeviceEntity.builder()
                         .name("Name_1")
                         .brand("Brand_1")
@@ -39,9 +44,9 @@ public class DeviceDataProviderImplTest {
                         .brand("Brand_2")
                         .time(LocalDateTime.parse("2021-01-01T01:01:01"))
                         .build()
-                );
+                )));
 
-        Mockito.when(repo.findAll()).thenReturn(deviceEntities);
+        Mockito.when(repo.findAll(Mockito.any(Pageable.class))).thenReturn(deviceEntities);
 
         List<Device> deviceList = Arrays.asList(
                 Device.builder()
@@ -55,7 +60,29 @@ public class DeviceDataProviderImplTest {
                         .time(LocalDateTime.parse("2021-01-01T01:01:01"))
                         .build()
         );
-        Assertions.assertEquals(deviceList, dataProvider.listDevices());
+        Assertions.assertEquals(deviceList, dataProvider.listDevices(PageRequest.of(0, 5), null));
+    }
+
+    @Test
+    public void testListDevicesByBrand() {
+        Page<DeviceEntity> deviceEntities = new PageImpl((Arrays.asList(
+                DeviceEntity.builder()
+                        .name("Name_1")
+                        .brand("Brand_1")
+                        .time(LocalDateTime.parse("2021-01-01T01:01:01"))
+                        .build()
+        )));
+
+        Mockito.when(repo.findAllByBrand(Mockito.anyString(), Mockito.any(Pageable.class))).thenReturn(deviceEntities);
+
+        List<Device> deviceList = Collections.singletonList(
+                Device.builder()
+                        .name("Name_1")
+                        .brand("Brand_1")
+                        .time(LocalDateTime.parse("2021-01-01T01:01:01"))
+                        .build()
+        );
+        Assertions.assertEquals(deviceList, dataProvider.listDevices(PageRequest.of(0, 5), "Brand_1"));
     }
 
     @Test
