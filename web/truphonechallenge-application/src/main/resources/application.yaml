@@ -17,6 +17,6 @@ spring:
   datasource:
     initialization-mode: always
     platform: postgres
-    url: jdbc:postgresql://localhost:5432/devices
+    url: jdbc:postgresql://db:5432/devices
     username: admin
     password: admin123

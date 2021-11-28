@@ -2,6 +2,29 @@ version: '3.8'
 
 services:
 
+  common-image: &BASE_IMAGE
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+  tests:
+    <<: *BASE_IMAGE
+    command: /app/mvnw test -f web
+    depends_on:
+      - db
+    networks:
+      - challenge
+
+  dev:
+    <<: *BASE_IMAGE
+    command: /app/mvnw spring-boot:run
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    networks:
+      - challenge
+
   db:
     image: postgres:13.4
     container_name: postgres
