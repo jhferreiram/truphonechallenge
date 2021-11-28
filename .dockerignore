@@ -5,4 +5,5 @@
 docker-compose.yaml
 README.md
 *.iml
+*postman_collection.json
 Dockerfile
